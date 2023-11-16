@@ -118,6 +118,12 @@ class Zombie:
         self.loc_no = (self.loc_no + 1) % len(self.patrol_locations)
         return BehaviorTree.SUCCESS
 
+    def is_boy_more_ball(self):
+        if self.ball_count >= play_mode.boy.ball_count:
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+
     def build_behavior_tree(self):
         a1 = Action('Set target location', self.set_target_location, 500, 50)
         a2 = Action('Move to', self.move_to)
@@ -129,6 +135,7 @@ class Zombie:
         SEQ_wander = Sequence('Wander', a3, a2)
 
         c1 = Condition('소년이 근처에 있는가?', self.is_boy_nearby, 7)
+        c2 = Condition('소년보다 공 개수가 많은가?', self.is_boy_more_ball)
         a4 = Action('소년한테 접근', self.move_to_boy)
 
         SEQ_chase_boy = Sequence('소년을 추적', c1, a4)
